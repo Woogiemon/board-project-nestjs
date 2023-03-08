@@ -43,31 +43,4 @@ export class UserService {
     await this.userRepository.save(newUser);
     return newUser;
   }
-
-  //   async login(request: JoinUserRequest) {
-  //     const bcryptPassword = await bcrypt.hash(request.password, 12);
-
-  //     // 이런 흐름을 생각해내야한다.
-  //     // 해당 이메일을 가진 User가 있는지 확인
-  //     const currentUser = await this.userRepository.findOne({
-  //       where: {
-  //         email: request.email,
-  //       },
-  //     });
-
-  //     // 없으면
-  // if (!currentUser) {
-  //   throw new Error('해당 이메일을 가진 유저가 없습니다.');
-  // }
-
-  //     // 여기까지 내려오면 이미 해당 이메일을 가진 User가 있다. 이제 비밀번호만 체크하면 된다.
-  //     if (currentUser.password != bcryptPassword) {
-  //       throw new Error('패스워드가 틀렸습니다.');
-  //     }
-
-  //     const payload = { email: request.email, password: bcryptPassword };
-  //     return {
-  //       access_token: this.jwtService.sign(payload),
-  //     };
-  //   }
 }

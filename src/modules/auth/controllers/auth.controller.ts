@@ -37,7 +37,7 @@ export class AuthController {
     const user = await this.userService.getByEmail(request.email);
     this.authService.getAuthenticatedUser(request.email, request.password);
     const accessToken = await this.authService.getAccessToken(user.email);
-    this.logger.debug(accessToken);
+
     res.setHeader('Authorization', 'Bearer ' + accessToken);
     res.cookie('jwt', accessToken, {
       httpOnly: true,
