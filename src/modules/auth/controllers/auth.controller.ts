@@ -10,9 +10,11 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
+import { UserPayload } from 'src/decorators/userPayload.decorator';
 import { UserService } from '../../user/services/user.service';
 import { JwtAuthGuard } from '../auth.guard';
 import { AuthenticateRequest } from '../dto/authenticateRequest';
+import { Payload } from '../dto/payload.dto';
 import RegisterRequest from '../dto/registerRequest.dto';
 import { AuthService } from '../services/auth.service';
 
@@ -35,6 +37,7 @@ export class AuthController {
     const user = await this.userService.getByEmail(request.email);
     this.authService.getAuthenticatedUser(request.email, request.password);
     const accessToken = await this.authService.getAccessToken(user.email);
+    this.logger.debug(accessToken);
     res.setHeader('Authorization', 'Bearer ' + accessToken);
     res.cookie('jwt', accessToken, {
       httpOnly: true,
@@ -46,7 +49,7 @@ export class AuthController {
   }
 
   @Post('/logout')
-  logout(@Req() req: Request, @Res() res: Response): any {
+  logout(@Res() res: Response): any {
     res.clearCookie('jwt');
     return res.send({
       message: 'success',
@@ -55,7 +58,8 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/getCookie')
-  async getCookie(@Req() req: Request) {
+  async getCookie(@UserPayload() payload: Payload, @Req() req: Request) {
+    this.logger.verbose(payload.id);
     console.log(req.cookies['jwt']);
     return req.cookies['jwt'];
   }

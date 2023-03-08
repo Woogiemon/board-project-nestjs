@@ -4,12 +4,12 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
+import { UserPayload } from 'src/decorators/userPayload.decorator';
 import { JwtAuthGuard } from 'src/modules/auth/auth.guard';
+import { Payload } from 'src/modules/auth/dto/payload.dto';
 import { UserService } from 'src/modules/user/services/user.service';
 import { InsertBoardRequest } from '../dto/insertBoardRequest.dto';
 import { BoardService } from '../services/board.service';
@@ -25,9 +25,11 @@ export class BoardController {
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtAuthGuard)
   @Post('/insertBoard')
-  async insertBoard(@Req() req: Request, @Body() request: InsertBoardRequest) {
-    const decodedUser = this.jwtService.decode(req.cookies['jwt']);
-    const user = await this.userService.fetchOneUser(decodedUser['id']);
+  async insertBoard(
+    @UserPayload() payload: Payload,
+    @Body() request: InsertBoardRequest,
+  ) {
+    const user = await this.userService.fetchOneUser(payload.id);
     await this.boardService.insertBoard(user, request);
   }
 }
