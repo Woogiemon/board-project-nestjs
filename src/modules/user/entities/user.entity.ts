@@ -15,8 +15,8 @@ export class UserEntity {
   @Generated('increment')
   id: number;
 
-  @Column({ name: 'USER_ID' })
-  userId: string;
+  @Column({ name: 'EMAIL', unique: true })
+  email: string;
 
   @Column({ name: 'PASSWORD' })
   password: string;
