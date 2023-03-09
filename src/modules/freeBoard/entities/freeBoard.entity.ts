@@ -9,9 +9,9 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('BOARD')
-export class BoardEntity {
-  @PrimaryGeneratedColumn({ name: 'BOARD_UID' })
+@Entity('FREE_BOARD')
+export class FreeBoardEntity {
+  @PrimaryGeneratedColumn({ name: 'FREE_BOARD_UID' })
   @Generated('increment')
   id: number;
 
@@ -21,7 +21,7 @@ export class BoardEntity {
   @Column({ name: 'CONTENT' })
   content: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.boards)
+  @ManyToOne(() => UserEntity, (user) => user.freeBoards)
   writer: UserEntity;
 
   @CreateDateColumn({ name: 'CREATE_AT' })

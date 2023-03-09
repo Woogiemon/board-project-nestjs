@@ -13,7 +13,7 @@ import { Request, Response } from 'express';
 import { UserPayload } from 'src/decorators/userPayload.decorator';
 import { UserService } from '../../user/services/user.service';
 import { JwtAuthGuard } from '../auth.guard';
-import { AuthenticateRequest } from '../dto/authenticateRequest';
+import { LoginRequest } from '../dto/loginRequest';
 import { Payload } from '../dto/payload.dto';
 import RegisterRequest from '../dto/registerRequest.dto';
 import { AuthService } from '../services/auth.service';
@@ -33,7 +33,7 @@ export class AuthController {
   }
 
   @Post('/login')
-  async login(@Body() request: AuthenticateRequest, @Res() res: Response) {
+  async login(@Body() request: LoginRequest, @Res() res: Response) {
     const user = await this.userService.getByEmail(request.email);
     this.authService.getAuthenticatedUser(request.email, request.password);
     const accessToken = await this.authService.getAccessToken(user.email);

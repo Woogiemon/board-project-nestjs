@@ -4,7 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { AuthModule } from './modules/auth/auth.module';
-import { BoardModule } from './modules/board/board.module';
+import { FreeBoardModule } from './modules/freeBoard/freeBoard.module';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
@@ -35,7 +35,7 @@ import { UserModule } from './modules/user/user.module';
       synchronize: true,
     }),
     UserModule,
-    BoardModule,
+    FreeBoardModule,
     AuthModule,
   ],
   controllers: [],

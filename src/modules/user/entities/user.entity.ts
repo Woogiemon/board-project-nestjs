@@ -1,4 +1,4 @@
-import { BoardEntity } from 'src/modules/board/entities/board.entity';
+import { FreeBoardEntity } from 'src/modules/freeBoard/entities/freeBoard.entity';
 import {
   Column,
   CreateDateColumn,
@@ -24,8 +24,11 @@ export class UserEntity {
   @Column({ name: 'NAME' })
   name: string;
 
-  @OneToMany(() => BoardEntity, (board) => board.writer)
-  boards: BoardEntity[];
+  @OneToMany(() => FreeBoardEntity, (freeBoard) => freeBoard.writer)
+  freeBoards: FreeBoardEntity[];
+
+  // @ManyToOne(() => BrandEntity, (company) => company.users)
+  // company: BrandEntity;
 
   @CreateDateColumn({ name: 'CREATE_AT' })
   created_at: Date;
