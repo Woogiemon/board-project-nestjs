@@ -11,11 +11,13 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { UserPayload } from 'src/decorators/userPayload.decorator';
+import { BrandService } from 'src/modules/brand/services/brand.service';
+import { EmployeeService } from 'src/modules/employee/services/employee.service';
 import { UserService } from '../../user/services/user.service';
 import { JwtAuthGuard } from '../auth.guard';
 import { LoginRequest } from '../dto/loginRequest';
 import { Payload } from '../dto/payload.dto';
-import RegisterRequest from '../dto/registerRequest.dto';
+import { RegisterRequest } from '../dto/registerRequest.dto';
 import { AuthService } from '../services/auth.service';
 
 @Controller('auth')
@@ -24,35 +26,62 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
+    private readonly employeeService: EmployeeService,
+    private readonly brandService: BrandService,
     private readonly jwtService: JwtService,
   ) {}
 
   @Post('/register')
   async register(@Body() request: RegisterRequest) {
-    return await this.authService.register(request);
+    if (request.employeeCode === 'string') {
+      return await this.authService.register(request);
+    } else {
+      return await this.authService.registerEmployee(request);
+    }
   }
 
+  // TODO : 로그인된 유저의 정보 Response
   @Post('/login')
   async login(@Body() request: LoginRequest, @Res() res: Response) {
-    const user = await this.userService.getByEmail(request.email);
-    this.authService.getAuthenticatedUser(request.email, request.password);
-    const accessToken = await this.authService.getAccessToken(user.email);
+    if (request.email != 'string') {
+      const user = await this.userService.getByEmail(request.email);
+      this.authService.getAuthenticatedUser(request.email, request.password);
+      const accessToken = await this.authService.getAccessToken(user.email);
 
-    res.setHeader('Authorization', 'Bearer ' + accessToken);
-    res.cookie('jwt', accessToken, {
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+      res.setHeader('Authorization', 'Bearer ' + accessToken);
+      res.cookie('jwt', accessToken, {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+    } else {
+      const employee = await this.employeeService.fetchOneEmployee(
+        request.employeeCode,
+      );
+      this.authService.getAuthenticatedEmployee(
+        request.employeeCode,
+        request.password,
+      );
+      const accessToken = await this.authService.getEmployeeAccessToken(
+        employee.employeeCode,
+      );
+
+      res.setHeader('Authorization', 'Bearer ' + accessToken);
+      res.cookie('jwtEmployee', accessToken, {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+    }
     return res.send({
-      message: 'success',
+      message: '로그인 성공',
     });
   }
 
   @Post('/logout')
   logout(@Res() res: Response): any {
     res.clearCookie('jwt');
+    res.clearCookie('jwtEmployee');
     return res.send({
-      message: 'success',
+      message: '로그아웃 성공',
     });
   }
 
@@ -60,7 +89,6 @@ export class AuthController {
   @Get('/getCookie')
   async getCookie(@UserPayload() payload: Payload, @Req() req: Request) {
     this.logger.verbose(payload.id);
-    console.log(req.cookies['jwt']);
     return req.cookies['jwt'];
   }
 }

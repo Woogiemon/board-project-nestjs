@@ -4,7 +4,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { AuthModule } from './modules/auth/auth.module';
+import { BrandModule } from './modules/brand/brand.module';
+import { EmployeeModule } from './modules/employee/employee.module';
 import { FreeBoardModule } from './modules/freeBoard/freeBoard.module';
+import { ProductBoardModule } from './modules/productBoard/productBoard.module';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
@@ -33,9 +36,13 @@ import { UserModule } from './modules/user/user.module';
       database: 'postgres',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
+      logging: true,
     }),
+    BrandModule,
     UserModule,
+    EmployeeModule,
     FreeBoardModule,
+    ProductBoardModule,
     AuthModule,
   ],
   controllers: [],

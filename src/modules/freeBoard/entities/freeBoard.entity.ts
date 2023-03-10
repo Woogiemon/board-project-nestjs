@@ -1,3 +1,4 @@
+import { EmployeeEntity } from 'src/modules/employee/entities/employee.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
 import {
   Column,
@@ -23,6 +24,9 @@ export class FreeBoardEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.freeBoards)
   writer: UserEntity;
+
+  @ManyToOne(() => EmployeeEntity, (employee) => employee.freeBoards)
+  employeeWriter: EmployeeEntity;
 
   @CreateDateColumn({ name: 'CREATE_AT' })
   created_at: Date;

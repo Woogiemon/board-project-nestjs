@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BrandService } from 'src/modules/brand/services/brand.service';
 import { Repository } from 'typeorm';
 import { AddUserRequest } from '../dto/addUserRequest.dto';
 import { UserEntity } from '../entities/user.entity';
@@ -9,6 +10,7 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    private brandService: BrandService,
   ) {}
 
   async fetchAllUser(): Promise<UserEntity[]> {
@@ -35,11 +37,15 @@ export class UserService {
   }
 
   async addUser(request: AddUserRequest): Promise<UserEntity> {
+    const brand = await this.brandService.fetchBrandInfo(request.brandId);
+
     const newUser = this.userRepository.create({
       email: request.email,
       password: request.password,
       name: request.name,
+      brand: brand,
     });
+    const addedUser = await this.userRepository.save(newUser);
     await this.userRepository.save(newUser);
     return newUser;
   }

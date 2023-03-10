@@ -1,8 +1,10 @@
+import { EmployeeEntity } from 'src/modules/employee/entities/employee.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   Generated,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -19,8 +21,8 @@ export class ProductBoardEntity {
   @Column({ name: 'PRICE' })
   price: number;
 
-  //   @ManyToOne(() => UserEntity, (user) => user.boards)
-  //   writer: UserEntity;
+  @ManyToOne(() => EmployeeEntity, (employee) => employee.productBoards)
+  employee: EmployeeEntity;
 
   @CreateDateColumn({ name: 'CREATE_AT' })
   created_at: Date;
