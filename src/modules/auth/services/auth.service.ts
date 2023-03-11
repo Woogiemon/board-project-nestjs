@@ -1,28 +1,44 @@
-import { Body, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  Body,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { instanceToPlain } from 'class-transformer';
+import { BrandEntity } from 'src/modules/brand/entities/brand.entity';
 import { EmployeeService } from 'src/modules/employee/services/employee.service';
+import { Repository } from 'typeorm';
 import { UserService } from '../../user/services/user.service';
 import RegisterRequest from '../dto/registerRequest.dto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   constructor(
     private readonly userService: UserService,
     private readonly employeeService: EmployeeService,
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
+    @InjectRepository(BrandEntity)
+    private readonly brandRepository: Repository<BrandEntity>,
   ) {}
 
   public async register(request: RegisterRequest) {
+    const brand = await this.brandRepository.findOne({
+      where: { id: request.brandId },
+    });
+
     const hashedPassword = await bcrypt.hash(request.password, 12);
     const createdUser = await this.userService.addUser({
       email: request.email,
       name: request.name,
       password: hashedPassword,
-      brandId: request.brandId,
+      brandId: brand.id,
     });
 
     const accessToken = await this.jwtService.signAsync(
@@ -35,11 +51,15 @@ export class AuthService {
   }
 
   public async registerEmployee(request: RegisterRequest) {
+    const brand = await this.brandRepository.findOne({
+      where: { id: request.brandId },
+    });
+
     const hashedPassword = await bcrypt.hash(request.password, 12);
     const createdEmployee = await this.employeeService.addEmployee({
       employeeCode: request.employeeCode,
       password: hashedPassword,
-      brandId: request.brandId,
+      brandId: brand.id,
     });
 
     const accessToken = await this.jwtService.signAsync(

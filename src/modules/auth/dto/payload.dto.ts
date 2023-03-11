@@ -2,11 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class Payload {
   @ApiProperty()
-  readonly id: number;
+  readonly id?: number;
   @ApiProperty()
-  readonly employeeCode: string;
+  readonly employeeCode?: string;
   @ApiProperty()
-  readonly email: string;
+  readonly email?: string;
   @ApiProperty()
-  readonly name: string;
+  readonly name?: string;
 }

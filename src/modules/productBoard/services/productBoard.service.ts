@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EmployeeEntity } from 'src/modules/employee/entities/employee.entity';
 import { Repository } from 'typeorm';
 import { InsertProductBoardRequest } from '../dto/insertProductBoardRequest.dto';
-import { InsertProductBoardResponse } from '../dto/InsertProductBoardResponse.dto';
 import { UpdateProductBoardRequest } from '../dto/updateProductBoardRequest.dto';
 import { ProductBoardEntity } from '../entities/productBoard.entity';
 
@@ -14,10 +13,11 @@ export class ProductBoardService {
     private productBoardRepository: Repository<ProductBoardEntity>,
   ) {}
 
+  // InsertProductBoardResponse
   async insertProductBoard(
     employee: EmployeeEntity,
     request: InsertProductBoardRequest,
-  ): Promise<InsertProductBoardResponse> {
+  ): Promise<any> {
     const newProductBoard = this.productBoardRepository.create({
       productName: request.productName,
       price: request.price,
@@ -27,6 +27,9 @@ export class ProductBoardService {
       newProductBoard,
     );
 
+    console.log(savedProductBoard.employee.brand);
+    console.log(savedProductBoard.employee.brand.id);
+
     return {
       id: savedProductBoard.id,
       productName: savedProductBoard.productName,
@@ -34,6 +37,7 @@ export class ProductBoardService {
       created_at: savedProductBoard.created_at,
       updated_at: savedProductBoard.updated_at,
       employeeCode: savedProductBoard.employee.employeeCode,
+      brandId: savedProductBoard.employee.brand.id,
     };
   }
 

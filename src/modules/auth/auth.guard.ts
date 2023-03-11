@@ -8,7 +8,7 @@ export class JwtAuthGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest();
     if (!req.cookies?.['jwt'] && !req.cookies?.['jwtEmployee']) {
-      throw new Error('토큰이 존재하지 않습니다.');
+      throw new Error('로그인이 필요합니다.');
     }
     return true;
   }

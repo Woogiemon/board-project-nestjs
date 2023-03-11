@@ -16,7 +16,7 @@ export class EmployeeEntity {
   @Generated('increment')
   id: number;
 
-  @Column({ name: 'EMPLOYEE_CODE' })
+  @Column({ name: 'EMPLOYEE_CODE', unique: true })
   employeeCode: string;
 
   @Column({ name: 'PASSWORD' })

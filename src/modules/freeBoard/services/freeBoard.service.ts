@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EmployeeEntity } from 'src/modules/employee/entities/employee.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
@@ -6,27 +6,33 @@ import { Repository } from 'typeorm';
 import { FetchBoardInfoResponse } from '../dto/fetchFreeBoardInfo.dto';
 import { InsertProductBoardByEmployeeResponse } from '../dto/insertFreeBoardByEmployeeResponse.dto';
 import { InsertFreeBoardRequest } from '../dto/insertFreeBoardRequest.dto';
-import { InsertProductBoardResponse } from '../dto/InsertFreeBoardResponse.dto';
+import { InsertFreeBoardResponse } from '../dto/InsertFreeBoardResponse.dto';
 import { UpdateFreeBoardRequest } from '../dto/updateFreeBoardRequest.dto';
 import { FreeBoardEntity } from '../entities/freeBoard.entity';
 
 @Injectable()
 export class FreeBoardService {
+  private readonly logger = new Logger(FreeBoardService.name);
+
   constructor(
     @InjectRepository(FreeBoardEntity)
     private freeBoardRepository: Repository<FreeBoardEntity>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
 
   async insertFreeBoard(
     user: UserEntity,
     request: InsertFreeBoardRequest,
-  ): Promise<InsertProductBoardResponse> {
+  ): Promise<InsertFreeBoardResponse> {
     const newBoard = this.freeBoardRepository.create({
       title: request.title,
       content: request.content,
       writer: user,
     });
+
     const savedBoard = await this.freeBoardRepository.save(newBoard);
+
     return {
       id: savedBoard.id,
       title: savedBoard.title,
@@ -34,6 +40,7 @@ export class FreeBoardService {
       created_at: savedBoard.created_at,
       updated_at: savedBoard.updated_at,
       writerId: savedBoard.writer.id,
+      brandId: savedBoard.writer.brand.id,
     };
   }
 

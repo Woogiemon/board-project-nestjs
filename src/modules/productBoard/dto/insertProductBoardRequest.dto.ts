@@ -9,8 +9,4 @@ export class InsertProductBoardRequest {
   @ApiProperty()
   @IsNumber()
   price: number;
-
-  @ApiProperty()
-  @IsString()
-  employeeCode: string;
 }

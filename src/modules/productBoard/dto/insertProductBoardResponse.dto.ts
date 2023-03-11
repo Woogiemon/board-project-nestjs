@@ -25,4 +25,8 @@ export class InsertProductBoardResponse {
   @ApiProperty()
   @IsDate()
   updated_at: Date;
+
+  @ApiProperty()
+  @IsNumber()
+  brandId: number;
 }

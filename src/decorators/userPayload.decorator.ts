@@ -13,13 +13,20 @@ export const UserPayload = createParamDecorator(
       const jwtService = new JwtService({});
       const request = ctx.switchToHttp().getRequest();
 
-      const cookie = data
-        ? await request.cookies?.['jwt']
-        : await request.cookies;
+      if (request.cookies.jwt) {
+        const cookie = request.cookies.jwt;
+        const jwt: Payload = await jwtService.verifyAsync(cookie, {
+          secret: process.env.JWT_SECRET,
+        });
 
-      const jwt: Payload = await jwtService.verifyAsync(cookie.jwt, {
+        return jwt;
+      }
+
+      const cookie = request.cookies.jwtEmployee;
+      const jwt: Payload = await jwtService.verifyAsync(cookie, {
         secret: process.env.JWT_SECRET,
       });
+
       return jwt;
     } catch (error) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);

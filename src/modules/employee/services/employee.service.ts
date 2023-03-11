@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { RegisterRequest } from 'src/modules/auth/dto/registerRequest.dto';
 import { BrandService } from 'src/modules/brand/services/brand.service';
 import { Repository } from 'typeorm';
-import { AddEmployeeRequest } from '../dto/addEmployeeRequest.dto';
 import { EmployeeEntity } from '../entities/employee.entity';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class EmployeeService {
     private brandService: BrandService,
   ) {}
 
-  async addEmployee(request: AddEmployeeRequest): Promise<EmployeeEntity> {
+  async addEmployee(request: RegisterRequest): Promise<EmployeeEntity> {
     const brand = await this.brandService.fetchBrandInfo(request.brandId);
 
     const newEmployee = this.employeeRepository.create({

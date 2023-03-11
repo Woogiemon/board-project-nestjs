@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsNumber, IsString } from 'class-validator';
 
-export class InsertProductBoardResponse {
+export class InsertFreeBoardResponse {
   @ApiProperty()
   @IsNumber()
   id: number;
@@ -24,5 +24,13 @@ export class InsertProductBoardResponse {
 
   @ApiProperty()
   @IsString()
-  writerId: number;
+  writerId?: number;
+
+  @ApiProperty()
+  @IsString()
+  employeeWriterCode?: string;
+
+  @ApiProperty()
+  @IsNumber()
+  brandId?: number;
 }

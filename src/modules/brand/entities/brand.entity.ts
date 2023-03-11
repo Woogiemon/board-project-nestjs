@@ -16,7 +16,7 @@ import {
 
 @Entity('BRAND')
 export class BrandEntity {
-  @PrimaryGeneratedColumn({ name: 'BRAND_UID' })
+  @PrimaryGeneratedColumn({ name: 'BRAND_ID' })
   @Generated('increment')
   id: number;
 

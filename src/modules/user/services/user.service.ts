@@ -45,8 +45,6 @@ export class UserService {
       name: request.name,
       brand: brand,
     });
-    const addedUser = await this.userRepository.save(newUser);
-    await this.userRepository.save(newUser);
-    return newUser;
+    return await this.userRepository.save(newUser);
   }
 }

@@ -5,4 +5,8 @@ export class CreateBrandRequest {
   @ApiProperty()
   @IsString()
   readonly name: string;
+
+  @ApiProperty()
+  @IsString()
+  readonly users: number[];
 }
