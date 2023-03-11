@@ -20,6 +20,7 @@ export class UserService {
   async fetchOneUser(id: number): Promise<UserEntity> {
     return await this.userRepository.findOne({
       where: { id },
+      relations: ['purchaseHistories', 'brand'],
     });
   }
 
