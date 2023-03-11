@@ -1,27 +1,36 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EmployeeEntity } from 'src/modules/employee/entities/employee.entity';
 import { Repository } from 'typeorm';
 import { InsertProductBoardRequest } from '../dto/insertProductBoardRequest.dto';
+import { InsertProductBoardResponse } from '../dto/InsertProductBoardResponse.dto';
 import { UpdateProductBoardRequest } from '../dto/updateProductBoardRequest.dto';
 import { ProductBoardEntity } from '../entities/productBoard.entity';
 
 @Injectable()
 export class ProductBoardService {
+  private readonly logger = new Logger(ProductBoardService.name);
   constructor(
     @InjectRepository(ProductBoardEntity)
     private productBoardRepository: Repository<ProductBoardEntity>,
+    @InjectRepository(EmployeeEntity)
+    private employeeRepository: Repository<EmployeeEntity>,
   ) {}
 
-  // InsertProductBoardResponse
   async insertProductBoard(
     employee: EmployeeEntity,
     request: InsertProductBoardRequest,
-  ): Promise<any> {
+  ): Promise<InsertProductBoardResponse> {
+    const employeeWriter = await this.employeeRepository.findOne({
+      where: { id: employee.id },
+      relations: ['brand'],
+    });
+
     const newProductBoard = this.productBoardRepository.create({
       productName: request.productName,
       price: request.price,
-      employee: employee,
+      employee: employeeWriter,
+      brand: employeeWriter.brand,
     });
     const savedProductBoard = await this.productBoardRepository.save(
       newProductBoard,
@@ -38,10 +47,10 @@ export class ProductBoardService {
     };
   }
 
-  async fetchProductBoard(id: number): Promise<any> {
+  async fetchProductBoard(id: number): Promise<InsertProductBoardResponse> {
     const result = await this.productBoardRepository.findOne({
       where: { id },
-      relations: ['employee'],
+      relations: ['employee', 'brand'],
     });
 
     return {
@@ -51,6 +60,7 @@ export class ProductBoardService {
       created_at: result.created_at,
       updated_at: result.updated_at,
       employeeCode: result.employee.employeeCode,
+      brandId: result.brand.id,
     };
   }
 
