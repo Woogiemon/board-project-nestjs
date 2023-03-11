@@ -9,14 +9,18 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { UserPayload } from 'src/decorators/userPayload.decorator';
 import { JwtAuthGuard } from 'src/modules/auth/auth.guard';
 import { Payload } from 'src/modules/auth/dto/payload.dto';
+import { EmployeeEntity } from 'src/modules/employee/entities/employee.entity';
 import { EmployeeService } from 'src/modules/employee/services/employee.service';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
+import { Repository } from 'typeorm';
+import { FetchProductBoardResponse } from '../dto/fetchProductBoardResponse.dto';
 import { InsertProductBoardRequest } from '../dto/insertProductBoardRequest.dto';
 import { InsertProductBoardResponse } from '../dto/InsertProductBoardResponse.dto';
 import { UpdateProductBoardRequest } from '../dto/updateProductBoardRequest.dto';
-import { ProductBoardEntity } from '../entities/productBoard.entity';
 import { ProductBoardService } from '../services/productBoard.service';
 
 /**
@@ -31,6 +35,10 @@ export class ProductBoardController {
   constructor(
     private readonly productBoardService: ProductBoardService,
     private readonly employeeService: EmployeeService,
+    @InjectRepository(EmployeeEntity)
+    private employeeRepository: Repository<EmployeeEntity>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -52,14 +60,32 @@ export class ProductBoardController {
   @Get('/fetchProductBoard/:id')
   async fetchProductBoard(
     @Param('id') id: number,
-  ): Promise<InsertProductBoardResponse> {
+  ): Promise<FetchProductBoardResponse> {
     return await this.productBoardService.fetchProductBoard(id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('/fetchAllProductBoard')
-  async fetchAllProductBoard(): Promise<ProductBoardEntity[]> {
-    return await this.productBoardService.fetchAllProductBoard();
+  async fetchAllProductBoard(
+    @UserPayload() payload: Payload,
+  ): Promise<FetchProductBoardResponse[]> {
+    if (payload.employeeCode) {
+      const employee = await this.employeeRepository.findOne({
+        where: { id: payload.id },
+        relations: ['brand'],
+      });
+      return await this.productBoardService.fetchAllProductBoard(
+        employee.brand.id,
+      );
+    }
+
+    if (payload.email) {
+      const user = await this.userRepository.findOne({
+        where: { id: payload.id },
+        relations: ['brand'],
+      });
+      return await this.productBoardService.fetchAllProductBoard(user.brand.id);
+    }
   }
 
   @UseGuards(JwtAuthGuard)

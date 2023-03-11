@@ -2,6 +2,7 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EmployeeEntity } from 'src/modules/employee/entities/employee.entity';
 import { Repository } from 'typeorm';
+import { FetchProductBoardResponse } from '../dto/fetchProductBoardResponse.dto';
 import { InsertProductBoardRequest } from '../dto/insertProductBoardRequest.dto';
 import { InsertProductBoardResponse } from '../dto/InsertProductBoardResponse.dto';
 import { UpdateProductBoardRequest } from '../dto/updateProductBoardRequest.dto';
@@ -47,7 +48,7 @@ export class ProductBoardService {
     };
   }
 
-  async fetchProductBoard(id: number): Promise<InsertProductBoardResponse> {
+  async fetchProductBoard(id: number): Promise<FetchProductBoardResponse> {
     const result = await this.productBoardRepository.findOne({
       where: { id },
       relations: ['employee', 'brand'],
@@ -60,12 +61,30 @@ export class ProductBoardService {
       created_at: result.created_at,
       updated_at: result.updated_at,
       employeeCode: result.employee.employeeCode,
-      brandId: result.brand.id,
     };
   }
 
-  async fetchAllProductBoard(): Promise<ProductBoardEntity[]> {
-    return await this.productBoardRepository.find();
+  async fetchAllProductBoard(
+    brandId: number,
+  ): Promise<InsertProductBoardResponse[]> {
+    const productBoard = await this.productBoardRepository.find({
+      where: {
+        brand: {
+          id: brandId,
+        },
+      },
+      relations: ['brand', 'employee'],
+    });
+
+    return productBoard.map((v) => ({
+      id: v.id,
+      productName: v.productName,
+      price: v.price,
+      created_at: v.created_at,
+      updated_at: v.updated_at,
+      employeeCode: v.employee.employeeCode,
+      brandId: v.brand.id,
+    }));
   }
 
   async updateProductBoard(
