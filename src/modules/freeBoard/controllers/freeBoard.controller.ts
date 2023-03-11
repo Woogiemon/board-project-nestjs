@@ -91,9 +91,24 @@ export class FreeBoardController {
     }
   }
 
+  // 로그인한 사용자의 brand 의 모든 게시글 읽기
   @Get('/fetchAllFreeBoardInfo')
-  async fetchAllFreeBoardInfo() {
-    return await this.freeBoardService.fetchAllFreeBoardInfo();
+  async fetchAllFreeBoardInfo(@UserPayload() payload: Payload) {
+    if (payload.employeeCode) {
+      const employee = await this.employeeRepository.findOne({
+        where: { id: payload.id },
+        relations: ['brand'],
+      });
+      this.freeBoardService.fetchAllFreeBoardInfo(employee.brand.id);
+    }
+
+    if (payload.email) {
+      const user = await this.userRepository.findOne({
+        where: { id: payload.id },
+        relations: ['brand'],
+      });
+      return await this.freeBoardService.fetchAllFreeBoardInfo(user.brand.id);
+    }
   }
 
   // @HttpCode(HttpStatus.ACCEPTED)

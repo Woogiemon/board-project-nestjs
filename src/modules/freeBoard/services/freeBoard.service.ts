@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BrandEntity } from 'src/modules/brand/entities/brand.entity';
 import { EmployeeEntity } from 'src/modules/employee/entities/employee.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -17,6 +18,8 @@ export class FreeBoardService {
   constructor(
     @InjectRepository(FreeBoardEntity)
     private freeBoardRepository: Repository<FreeBoardEntity>,
+    @InjectRepository(BrandEntity)
+    private brandRepository: Repository<BrandEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     @InjectRepository(EmployeeEntity)
@@ -100,12 +103,20 @@ export class FreeBoardService {
     };
   }
 
-  async fetchAllFreeBoardInfo(): Promise<FetchBoardInfoResponse[]> {
-    const result = await this.freeBoardRepository.find({
-      relations: ['writer', 'employeeWriter', 'brand'],
+  async fetchAllFreeBoardInfo(
+    brandId: number,
+  ): Promise<FetchBoardInfoResponse[]> {
+    // 해당 브랜드의 freeboard 찾기
+    const freeboard = await this.freeBoardRepository.find({
+      where: {
+        brand: {
+          id: brandId,
+        },
+      },
+      relations: ['brand'],
     });
 
-    return result.map((v) => ({
+    return freeboard.map((v) => ({
       id: v.id,
       title: v.title,
       content: v.content,
