@@ -1,4 +1,5 @@
 import { BrandEntity } from 'src/modules/brand/entities/brand.entity';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -21,6 +22,9 @@ export class PurchaseHistoryEntity {
   @ManyToOne(() => BrandEntity, (brand) => brand.purchaseHistorys)
   @JoinColumn({ name: 'BRAND_ID' })
   brand: BrandEntity;
+
+  @ManyToOne(() => UserEntity, (user) => user.purchaseHistories)
+  user: UserEntity;
 
   /**
    * 차감 전 해당 사용자가 가진 포인트 양

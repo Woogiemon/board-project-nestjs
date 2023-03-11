@@ -1,5 +1,6 @@
 import { BrandEntity } from 'src/modules/brand/entities/brand.entity';
 import { FreeBoardEntity } from 'src/modules/freeBoard/entities/freeBoard.entity';
+import { PurchaseHistoryEntity } from 'src/modules/purchaseHistory/entities/purchaseHistory.entity';
 import {
   Column,
   CreateDateColumn,
@@ -28,6 +29,12 @@ export class UserEntity {
 
   @Column({ name: 'POINT', default: 10000 })
   point: number;
+
+  @OneToMany(
+    () => PurchaseHistoryEntity,
+    (purchaseHistory) => purchaseHistory.user,
+  )
+  purchaseHistories: PurchaseHistoryEntity[];
 
   @OneToMany(() => FreeBoardEntity, (freeBoard) => freeBoard.writer)
   freeBoards: FreeBoardEntity[];

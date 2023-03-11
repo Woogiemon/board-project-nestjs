@@ -4,6 +4,7 @@ import { ProductBoardService } from 'src/modules/productBoard/services/productBo
 import { UserEntity } from 'src/modules/user/entities/user.entity';
 import { UserService } from 'src/modules/user/services/user.service';
 import { Repository } from 'typeorm';
+import { InsertPurchaseHistoryResponse } from '../dto/insertPurchaseHistoryResponse.dto';
 import { PurchaseHistoryEntity } from '../entities/purchaseHistory.entity';
 
 @Injectable()
@@ -19,11 +20,14 @@ export class PurchaseHistoryService {
   ) {}
 
   // 상품을 구매할때 로그인한 유저의 정보를 읽어서 포인트를 차감하고 구매이력 추가
-  async insertPurchaseHistory(userId: number, productId: number): Promise<any> {
+  async insertPurchaseHistory(
+    userId: number,
+    productId: number,
+  ): Promise<InsertPurchaseHistoryResponse> {
     // 1. 로그인한 유저의 정보 읽기
     const user = await this.userRepository.findOne({
       where: { id: userId },
-      relations: ['brand'],
+      relations: ['brand', 'purchaseHistories'],
     });
     this.logger.debug(JSON.stringify(user));
 
@@ -53,6 +57,7 @@ export class PurchaseHistoryService {
     // 3-2. 구매이력에 추가 (UserPoint, Price, AfetUserPoint)
     const purchaseHistory = this.purchaseHistoryRepository.create({
       productName: product.productName,
+      user: user,
       beforPurhcasePoint: UserPoint,
       PurhcasePoint: Price,
       AfterPurhcasePoint: AfterUserPoint,
@@ -66,7 +71,8 @@ export class PurchaseHistoryService {
     return {
       id: savedHistory.id,
       productName: savedHistory.productName,
-      brand: savedHistory.brand.id,
+      brandId: savedHistory.brand.id,
+      userId: user.id,
       beforPurhcasePoint: savedHistory.beforPurhcasePoint,
       PurhcasePoint: savedHistory.PurhcasePoint,
       AfterPurhcasePoint: savedHistory.AfterPurhcasePoint,
