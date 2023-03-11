@@ -25,4 +25,8 @@ export class InsertProductBoardByEmployeeResponse {
   @ApiProperty()
   @IsString()
   employeeWriterCode: string;
+
+  @ApiProperty()
+  @IsNumber()
+  brandId: number;
 }

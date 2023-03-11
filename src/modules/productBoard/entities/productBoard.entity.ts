@@ -1,9 +1,11 @@
+import { BrandEntity } from 'src/modules/brand/entities/brand.entity';
 import { EmployeeEntity } from 'src/modules/employee/entities/employee.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   Generated,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -23,6 +25,10 @@ export class ProductBoardEntity {
 
   @ManyToOne(() => EmployeeEntity, (employee) => employee.productBoards)
   employee: EmployeeEntity;
+
+  @ManyToOne(() => BrandEntity, (brand) => brand.productBoards)
+  @JoinColumn({ name: 'BRAND_ID' })
+  brand: BrandEntity;
 
   @CreateDateColumn({ name: 'CREATE_AT' })
   created_at: Date;

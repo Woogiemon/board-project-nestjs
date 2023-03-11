@@ -29,4 +29,8 @@ export class FetchBoardInfoResponse {
   @ApiProperty()
   @IsNumber()
   employeeWriterCode?: string;
+
+  @ApiProperty()
+  @IsNumber()
+  brandId: number;
 }

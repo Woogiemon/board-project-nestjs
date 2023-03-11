@@ -27,9 +27,6 @@ export class ProductBoardService {
       newProductBoard,
     );
 
-    console.log(savedProductBoard.employee.brand);
-    console.log(savedProductBoard.employee.brand.id);
-
     return {
       id: savedProductBoard.id,
       productName: savedProductBoard.productName,

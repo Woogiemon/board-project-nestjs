@@ -1,28 +1,26 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Logger,
   Param,
   Post,
-  Put,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
 import { UserPayload } from 'src/decorators/userPayload.decorator';
 import { JwtAuthGuard } from 'src/modules/auth/auth.guard';
 import { Payload } from 'src/modules/auth/dto/payload.dto';
+import { EmployeeEntity } from 'src/modules/employee/entities/employee.entity';
 import { EmployeeService } from 'src/modules/employee/services/employee.service';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
 import { UserService } from 'src/modules/user/services/user.service';
+import { Repository } from 'typeorm';
 import { FetchBoardInfoResponse } from '../dto/fetchFreeBoardInfo.dto';
 import { InsertFreeBoardRequest } from '../dto/insertFreeBoardRequest.dto';
 import { InsertFreeBoardResponse } from '../dto/InsertFreeBoardResponse.dto';
-import { UpdateFreeBoardRequest as UpdateFreeBoardRequest } from '../dto/updateFreeBoardRequest.dto';
-import { FreeBoardEntity } from '../entities/freeBoard.entity';
 import { FreeBoardService } from '../services/freeBoard.service';
 
 /**
@@ -39,7 +37,11 @@ export class FreeBoardController {
     private readonly freeBoardService: FreeBoardService,
     private readonly userService: UserService,
     private readonly employeeService: EmployeeService,
-    private readonly jwtService: JwtService,
+
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+    @InjectRepository(EmployeeEntity)
+    private employeeRepository: Repository<EmployeeEntity>,
   ) {}
 
   @HttpCode(HttpStatus.CREATED)
@@ -53,7 +55,6 @@ export class FreeBoardController {
       const user = await this.userService.fetchOneUser(payload.id);
       return await this.freeBoardService.insertFreeBoard(user, request);
     }
-
     const employee = await this.employeeService.fetchOneEmployee(
       payload.employeeCode,
     );
@@ -63,28 +64,31 @@ export class FreeBoardController {
     );
   }
 
-  // 이따위로 짜면 안됨;;;;; 등록, 수정, 삭제 버튼을 따로 만들생각임?
-  // @HttpCode(HttpStatus.CREATED)
-  // @UseGuards(JwtAuthGuard)
-  // @Post('/insertFreeBoardByEmployee')
-  // async insertFreeBoardByEmployee(
-  //   @UserPayload() payload: Payload,
-  //   @Body() request: InsertFreeBoardRequest,
-  // ): Promise<InsertProductBoardByEmployeeResponse> {
-  //   const employee = await this.employeeService.fetchOneEmployee(
-  //     payload.employeeCode,
-  //   );
-  //   return await this.freeBoardService.insertFreeBoardByEmployee(
-  //     employee,
-  //     request,
-  //   );
-  // }
-
+  @UseGuards(JwtAuthGuard)
   @Get('/fetchFreeBoardInfo/:id')
   async fetchFreeBoardInfo(
+    @UserPayload() payload: Payload,
     @Param('id') id: number,
   ): Promise<FetchBoardInfoResponse> {
-    return await this.freeBoardService.fetchFreeBoardInfo(id);
+    if (payload.employeeCode) {
+      const employee = await this.employeeRepository.findOne({
+        where: { id: payload.id },
+        relations: ['brand'],
+      });
+      this.logger.debug(JSON.stringify(employee.brand));
+      return await this.freeBoardService.fetchFreeBoardInfo(
+        employee.brand.id,
+        id,
+      );
+    }
+
+    if (payload.email) {
+      const user = await this.userRepository.findOne({
+        where: { id: payload.id },
+        relations: ['brand'],
+      });
+      return await this.freeBoardService.fetchFreeBoardInfo(user.brand.id, id);
+    }
   }
 
   @Get('/fetchAllFreeBoardInfo')
@@ -92,57 +96,44 @@ export class FreeBoardController {
     return await this.freeBoardService.fetchAllFreeBoardInfo();
   }
 
-  @HttpCode(HttpStatus.ACCEPTED)
-  @UseGuards(JwtAuthGuard)
-  @Put('/updateFreeBoard')
-  async updateFreeBoard(
-    @UserPayload() payload: Payload,
-    @Body() request: UpdateFreeBoardRequest,
-  ): Promise<FreeBoardEntity> {
-    if (payload.name) {
-      const wantUpdateBoardWriterName = (
-        await this.freeBoardService.fetchFreeBoardInfo(request.id)
-      ).writerName;
-
-      if (wantUpdateBoardWriterName === payload.name) {
-        return await this.freeBoardService.updateFreeBoard(request);
-      }
-      throw new UnauthorizedException('본인만 수정할 수 있습니다.');
-    }
-
-    return await this.freeBoardService.updateFreeBoard(request);
-  }
-
   // @HttpCode(HttpStatus.ACCEPTED)
-  // @Put('/updateFreeBoardByEmployee')
-  // async updateFreeBoardByEmployee(
+  // @UseGuards(JwtAuthGuard)
+  // @Put('/updateFreeBoard')
+  // async updateFreeBoard(
+  //   @UserPayload() payload: Payload,
   //   @Body() request: UpdateFreeBoardRequest,
   // ): Promise<FreeBoardEntity> {
+  //   if (payload.name) {
+  //     const wantUpdateBoardWriterName = (
+  //       await this.freeBoardService.fetchFreeBoardInfo(request.id)
+  //     ).writerName;
+
+  //     if (wantUpdateBoardWriterName === payload.name) {
+  //       return await this.freeBoardService.updateFreeBoard(request);
+  //     }
+  //     throw new UnauthorizedException('본인만 수정할 수 있습니다.');
+  //   }
+
   //   return await this.freeBoardService.updateFreeBoard(request);
   // }
 
-  @HttpCode(HttpStatus.ACCEPTED)
-  @UseGuards(JwtAuthGuard)
-  @Delete('/deleteFreeBoard/:id')
-  async deleteFreeBoard(
-    @UserPayload() payload: Payload,
-    @Param('id') id: number,
-  ) {
-    if (payload.name) {
-      const wantDeleteBoardWriterName = (
-        await this.freeBoardService.fetchFreeBoardInfo(id)
-      )?.writerName;
+  // @HttpCode(HttpStatus.ACCEPTED)
+  // @UseGuards(JwtAuthGuard)
+  // @Delete('/deleteFreeBoard/:id')
+  // async deleteFreeBoard(
+  //   @UserPayload() payload: Payload,
+  //   @Param('id') id: number,
+  // ) {
+  //   if (payload.name) {
+  //     const wantDeleteBoardWriterName = (
+  //       await this.freeBoardService.fetchFreeBoardInfo(id)
+  //     )?.writerName;
 
-      if (wantDeleteBoardWriterName === payload.name) {
-        return this.freeBoardService.deleteFreeBoard(id);
-      }
-      throw new UnauthorizedException('본인만 삭제할 수 있습니다.');
-    }
-    return this.freeBoardService.deleteFreeBoard(id);
-  }
-
-  // @Delete('/deleteFreeBoardByEmployee/:id')
-  // async deleteFreeBoardByEmployee(@Param('id') id: number) {
+  //     if (wantDeleteBoardWriterName === payload.name) {
+  //       return this.freeBoardService.deleteFreeBoard(id);
+  //     }
+  //     throw new UnauthorizedException('본인만 삭제할 수 있습니다.');
+  //   }
   //   return this.freeBoardService.deleteFreeBoard(id);
   // }
 }

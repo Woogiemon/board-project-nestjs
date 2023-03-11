@@ -19,20 +19,27 @@ export class FreeBoardService {
     private freeBoardRepository: Repository<FreeBoardEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(EmployeeEntity)
+    private employeeRepository: Repository<EmployeeEntity>,
   ) {}
 
   async insertFreeBoard(
     user: UserEntity,
     request: InsertFreeBoardRequest,
   ): Promise<InsertFreeBoardResponse> {
+    const writer = await this.userRepository.findOne({
+      where: { id: user.id },
+      relations: ['brand'],
+    });
+
     const newBoard = this.freeBoardRepository.create({
       title: request.title,
       content: request.content,
-      writer: user,
+      writer: writer,
+      brand: writer.brand,
     });
-
     const savedBoard = await this.freeBoardRepository.save(newBoard);
-
+    this.logger.debug(writer.brand.name);
     return {
       id: savedBoard.id,
       title: savedBoard.title,
@@ -40,7 +47,7 @@ export class FreeBoardService {
       created_at: savedBoard.created_at,
       updated_at: savedBoard.updated_at,
       writerId: savedBoard.writer.id,
-      brandId: savedBoard.writer.brand.id,
+      brandId: savedBoard.brand.id,
     };
   }
 
@@ -48,12 +55,19 @@ export class FreeBoardService {
     employee: EmployeeEntity,
     request: InsertFreeBoardRequest,
   ): Promise<InsertProductBoardByEmployeeResponse> {
+    const employeeWriter = await this.employeeRepository.findOne({
+      where: { id: employee.id },
+      relations: ['brand'],
+    });
+
     const newBoard = this.freeBoardRepository.create({
       title: request.title,
       content: request.content,
-      employeeWriter: employee,
+      employeeWriter: employeeWriter,
+      brand: employeeWriter.brand,
     });
     const savedBoard = await this.freeBoardRepository.save(newBoard);
+
     return {
       id: savedBoard.id,
       title: savedBoard.title,
@@ -61,10 +75,14 @@ export class FreeBoardService {
       created_at: savedBoard.created_at,
       updated_at: savedBoard.updated_at,
       employeeWriterCode: savedBoard.employeeWriter.employeeCode,
+      brandId: savedBoard.brand.id,
     };
   }
 
-  async fetchFreeBoardInfo(id: number): Promise<FetchBoardInfoResponse> {
+  async fetchFreeBoardInfo(
+    brandId: number,
+    id: number,
+  ): Promise<FetchBoardInfoResponse> {
     const result = await this.freeBoardRepository.findOne({
       where: { id },
       relations: ['writer', 'employeeWriter'],
@@ -78,12 +96,13 @@ export class FreeBoardService {
       updated_at: result.updated_at,
       writerName: result.writer?.name,
       employeeWriterCode: result.employeeWriter?.employeeCode,
+      brandId: brandId,
     };
   }
 
   async fetchAllFreeBoardInfo(): Promise<FetchBoardInfoResponse[]> {
     const result = await this.freeBoardRepository.find({
-      relations: ['writer', 'employeeWriter'],
+      relations: ['writer', 'employeeWriter', 'brand'],
     });
 
     return result.map((v) => ({
@@ -94,6 +113,7 @@ export class FreeBoardService {
       updated_at: v.updated_at,
       writerName: v.writer?.name,
       employeeWriterCode: v.employeeWriter?.employeeCode,
+      brandId: v.brand.id,
     }));
   }
 

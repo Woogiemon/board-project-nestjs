@@ -7,9 +7,7 @@ import {
   CreateDateColumn,
   Entity,
   Generated,
-  JoinColumn,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -29,13 +27,11 @@ export class BrandEntity {
   @OneToMany(() => EmployeeEntity, (employee) => employee.brand)
   employees: EmployeeEntity[];
 
-  @OneToOne(() => FreeBoardEntity)
-  @JoinColumn()
-  freeBoard: FreeBoardEntity;
+  @OneToMany(() => FreeBoardEntity, (freeBoard) => freeBoard.brand)
+  freeBoards: FreeBoardEntity[];
 
-  @OneToOne(() => ProductBoardEntity)
-  @JoinColumn()
-  productBoard: ProductBoardEntity;
+  @OneToMany(() => ProductBoardEntity, (productBoard) => productBoard.brand)
+  productBoards: ProductBoardEntity[];
 
   @CreateDateColumn({ name: 'CREATE_AT' })
   created_at: Date;
