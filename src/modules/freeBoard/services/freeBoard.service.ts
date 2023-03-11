@@ -128,6 +128,12 @@ export class FreeBoardService {
     }));
   }
 
+  async fetchFreeBoardForUpdate(id: number) {
+    return await this.freeBoardRepository.findOne({
+      where: { id },
+    });
+  }
+
   async updateFreeBoard(
     request: UpdateFreeBoardRequest,
   ): Promise<FreeBoardEntity> {

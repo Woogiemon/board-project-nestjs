@@ -1,12 +1,15 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Logger,
   Param,
   Post,
+  Put,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,6 +24,8 @@ import { Repository } from 'typeorm';
 import { FetchBoardInfoResponse } from '../dto/fetchFreeBoardInfo.dto';
 import { InsertFreeBoardRequest } from '../dto/insertFreeBoardRequest.dto';
 import { InsertFreeBoardResponse } from '../dto/InsertFreeBoardResponse.dto';
+import { UpdateFreeBoardRequest } from '../dto/updateFreeBoardRequest.dto';
+import { FreeBoardEntity } from '../entities/freeBoard.entity';
 import { FreeBoardService } from '../services/freeBoard.service';
 
 /**
@@ -111,44 +116,57 @@ export class FreeBoardController {
     }
   }
 
-  // @HttpCode(HttpStatus.ACCEPTED)
-  // @UseGuards(JwtAuthGuard)
-  // @Put('/updateFreeBoard')
-  // async updateFreeBoard(
-  //   @UserPayload() payload: Payload,
-  //   @Body() request: UpdateFreeBoardRequest,
-  // ): Promise<FreeBoardEntity> {
-  //   if (payload.name) {
-  //     const wantUpdateBoardWriterName = (
-  //       await this.freeBoardService.fetchFreeBoardInfo(request.id)
-  //     ).writerName;
+  // 로그인한 일반 사용자의 게시글을 불러와서 업데이트 (조건 : 일반 사용자는 본인 게시글만 수정할 수 있다.)
+  @HttpCode(HttpStatus.ACCEPTED)
+  @UseGuards(JwtAuthGuard)
+  @Put('/updateFreeBoard')
+  async updateFreeBoard(
+    @UserPayload() payload: Payload,
+    @Body() request: UpdateFreeBoardRequest,
+  ): Promise<FreeBoardEntity> {
+    if (payload.name) {
+      const user = await this.userRepository.findOne({
+        where: { id: payload.id },
+        relations: ['brand'],
+      });
 
-  //     if (wantUpdateBoardWriterName === payload.name) {
-  //       return await this.freeBoardService.updateFreeBoard(request);
-  //     }
-  //     throw new UnauthorizedException('본인만 수정할 수 있습니다.');
-  //   }
+      const wantUpdateBoardWriterName = (
+        await this.freeBoardService.fetchFreeBoardInfo(
+          user.brand.id,
+          request.id,
+        )
+      ).writerName;
 
-  //   return await this.freeBoardService.updateFreeBoard(request);
-  // }
+      if (wantUpdateBoardWriterName === payload.name) {
+        return await this.freeBoardService.updateFreeBoard(request);
+      }
+      throw new UnauthorizedException('본인만 수정할 수 있습니다.');
+    }
 
-  // @HttpCode(HttpStatus.ACCEPTED)
-  // @UseGuards(JwtAuthGuard)
-  // @Delete('/deleteFreeBoard/:id')
-  // async deleteFreeBoard(
-  //   @UserPayload() payload: Payload,
-  //   @Param('id') id: number,
-  // ) {
-  //   if (payload.name) {
-  //     const wantDeleteBoardWriterName = (
-  //       await this.freeBoardService.fetchFreeBoardInfo(id)
-  //     )?.writerName;
+    return await this.freeBoardService.updateFreeBoard(request);
+  }
 
-  //     if (wantDeleteBoardWriterName === payload.name) {
-  //       return this.freeBoardService.deleteFreeBoard(id);
-  //     }
-  //     throw new UnauthorizedException('본인만 삭제할 수 있습니다.');
-  //   }
-  //   return this.freeBoardService.deleteFreeBoard(id);
-  // }
+  @HttpCode(HttpStatus.ACCEPTED)
+  @UseGuards(JwtAuthGuard)
+  @Delete('/deleteFreeBoard/:id')
+  async deleteFreeBoard(
+    @UserPayload() payload: Payload,
+    @Param('id') id: number,
+  ) {
+    if (payload.name) {
+      const user = await this.userRepository.findOne({
+        where: { id: payload.id },
+        relations: ['brand'],
+      });
+      const wantDeleteBoardWriterName = (
+        await this.freeBoardService.fetchFreeBoardInfo(user.brand.id, id)
+      )?.writerName;
+
+      if (wantDeleteBoardWriterName === payload.name) {
+        return this.freeBoardService.deleteFreeBoard(id);
+      }
+      throw new UnauthorizedException('본인만 삭제할 수 있습니다.');
+    }
+    return this.freeBoardService.deleteFreeBoard(id);
+  }
 }
