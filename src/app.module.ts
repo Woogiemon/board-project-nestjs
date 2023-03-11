@@ -8,6 +8,7 @@ import { BrandModule } from './modules/brand/brand.module';
 import { EmployeeModule } from './modules/employee/employee.module';
 import { FreeBoardModule } from './modules/freeBoard/freeBoard.module';
 import { ProductBoardModule } from './modules/productBoard/productBoard.module';
+import { PurchaseHistoryModule } from './modules/purchaseHistory/purchaseHistory.module';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
@@ -43,6 +44,7 @@ import { UserModule } from './modules/user/user.module';
     EmployeeModule,
     FreeBoardModule,
     ProductBoardModule,
+    PurchaseHistoryModule,
     AuthModule,
   ],
   controllers: [],

@@ -47,4 +47,12 @@ export class UserService {
     });
     return await this.userRepository.save(newUser);
   }
+
+  async updateUser(id: number, price: number): Promise<UserEntity> {
+    await this.userRepository.update(id, {
+      point: price,
+    });
+
+    return await this.userRepository.findOne({ where: { id } });
+  }
 }

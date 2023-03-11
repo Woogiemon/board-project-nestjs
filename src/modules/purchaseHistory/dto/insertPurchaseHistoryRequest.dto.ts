@@ -1,1 +1,1 @@
-export class InsertPurchaseHistory {}
+export class InsertPurchaseHistoryRequest {}
