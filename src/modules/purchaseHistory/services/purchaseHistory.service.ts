@@ -19,7 +19,6 @@ export class PurchaseHistoryService {
     private readonly productBoardService: ProductBoardService,
   ) {}
 
-  // 상품을 구매할때 로그인한 유저의 정보를 읽어서 포인트를 차감하고 구매이력 추가
   async insertPurchaseHistory(
     userId: number,
     productId: number,

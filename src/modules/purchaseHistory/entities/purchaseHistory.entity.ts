@@ -19,7 +19,7 @@ export class PurchaseHistoryEntity {
   @Column({ name: 'PRODUCT_NAME' })
   productName: string;
 
-  @ManyToOne(() => BrandEntity, (brand) => brand.purchaseHistorys)
+  @ManyToOne(() => BrandEntity, (brand) => brand.purchaseHistories)
   @JoinColumn({ name: 'BRAND_ID' })
   brand: BrandEntity;
 

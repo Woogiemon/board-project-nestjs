@@ -38,7 +38,7 @@ export class BrandEntity {
     () => PurchaseHistoryEntity,
     (purchaseHistory) => purchaseHistory.brand,
   )
-  purchaseHistorys: PurchaseHistoryEntity[];
+  purchaseHistories: PurchaseHistoryEntity[];
 
   @CreateDateColumn({ name: 'CREATE_AT' })
   created_at: Date;
