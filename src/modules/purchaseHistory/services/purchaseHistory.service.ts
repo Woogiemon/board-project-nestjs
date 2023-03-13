@@ -15,8 +15,8 @@ export class PurchaseHistoryService {
     private purchaseHistoryRepository: Repository<PurchaseHistoryEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    private readonly userService: UserService,
     private readonly productBoardService: ProductBoardService,
+    private readonly userService: UserService,
   ) {}
 
   async insertPurchaseHistory(

@@ -49,6 +49,7 @@ export class FreeBoardController {
     private employeeRepository: Repository<EmployeeEntity>,
   ) {}
 
+  //권한 @로 payload.name 같은 구분값 넣기
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtAuthGuard)
   @Post('/insertFreeBoard')

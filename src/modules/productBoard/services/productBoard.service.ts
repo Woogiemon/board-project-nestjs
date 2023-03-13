@@ -48,6 +48,13 @@ export class ProductBoardService {
     };
   }
 
+  async fetchProductInfo(id: number): Promise<ProductBoardEntity> {
+    return await this.productBoardRepository.findOne({
+      where: { id },
+      relations: ['employee', 'transacts', 'brand'],
+    });
+  }
+
   async fetchProductBoard(id: number): Promise<FetchProductBoardResponse> {
     const result = await this.productBoardRepository.findOne({
       where: { id },

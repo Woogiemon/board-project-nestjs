@@ -9,6 +9,7 @@ import { EmployeeModule } from './modules/employee/employee.module';
 import { FreeBoardModule } from './modules/freeBoard/freeBoard.module';
 import { ProductBoardModule } from './modules/productBoard/productBoard.module';
 import { PurchaseHistoryModule } from './modules/purchaseHistory/purchaseHistory.module';
+import { TransactModule } from './modules/transact/transact.module';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
@@ -41,6 +42,7 @@ import { UserModule } from './modules/user/user.module';
     }),
     BrandModule,
     UserModule,
+    TransactModule,
     EmployeeModule,
     FreeBoardModule,
     ProductBoardModule,

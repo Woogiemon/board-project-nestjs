@@ -1,6 +1,7 @@
 import { BrandEntity } from 'src/modules/brand/entities/brand.entity';
 import { FreeBoardEntity } from 'src/modules/freeBoard/entities/freeBoard.entity';
 import { PurchaseHistoryEntity } from 'src/modules/purchaseHistory/entities/purchaseHistory.entity';
+import { TransactEntity } from 'src/modules/transact/entities/transact.entity';
 import {
   Column,
   CreateDateColumn,
@@ -14,7 +15,7 @@ import {
 
 @Entity('USER')
 export class UserEntity {
-  @PrimaryGeneratedColumn({ name: 'USER_UID' })
+  @PrimaryGeneratedColumn({ name: 'USER_ID' })
   @Generated('increment')
   id: number;
 
@@ -35,6 +36,12 @@ export class UserEntity {
     (purchaseHistory) => purchaseHistory.user,
   )
   purchaseHistories: PurchaseHistoryEntity[];
+
+  @OneToMany(() => TransactEntity, (transact) => transact.purchaseUserName)
+  purchaseTransacts: TransactEntity[];
+
+  @OneToMany(() => TransactEntity, (transact) => transact.sellUserName)
+  sellTransacts: TransactEntity[];
 
   @OneToMany(() => FreeBoardEntity, (freeBoard) => freeBoard.writer)
   freeBoards: FreeBoardEntity[];

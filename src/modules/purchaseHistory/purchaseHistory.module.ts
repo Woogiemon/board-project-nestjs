@@ -28,5 +28,6 @@ import { PurchaseHistoryService } from './services/purchaseHistory.service';
     UserService,
     BrandService,
   ],
+  exports: [PurchaseHistoryService],
 })
 export class PurchaseHistoryModule {}
