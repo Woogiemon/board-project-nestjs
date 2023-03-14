@@ -9,8 +9,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { BrandService } from 'src/modules/brand/services/brand.service';
 import { ProductBoardEntity } from 'src/modules/productBoard/entities/productBoard.entity';
-import { ProductBoardService } from 'src/modules/productBoard/services/productBoard.service';
 import { PurchaseHistoryEntity } from 'src/modules/purchaseHistory/entities/purchaseHistory.entity';
+import { RatePlanCodeEntity } from 'src/modules/ratePlanCode/entities/ratePlanCode.entity';
 import { InsertTransactRequest } from 'src/modules/transact/dto/insertTransactRequest.dto';
 import { TransactService } from 'src/modules/transact/services/transact.service';
 import { Repository } from 'typeorm';
@@ -23,15 +23,15 @@ export class UserService {
   private readonly logger = new Logger(UserService.name);
   constructor(
     @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
+    private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(PurchaseHistoryEntity)
-    private purchaseHistoryRepository: Repository<PurchaseHistoryEntity>,
+    private readonly purchaseHistoryRepository: Repository<PurchaseHistoryEntity>,
     @InjectRepository(ProductBoardEntity)
-    private productBoardRepository: Repository<ProductBoardEntity>,
-
-    private brandService: BrandService,
-    private transactService: TransactService,
-    private productBoardService: ProductBoardService,
+    private readonly productBoardRepository: Repository<ProductBoardEntity>,
+    @InjectRepository(RatePlanCodeEntity)
+    private readonly ratePlanCodeRepository: Repository<RatePlanCodeEntity>,
+    private readonly brandService: BrandService,
+    private readonly transactService: TransactService,
   ) {}
 
   async fetchAllUser(): Promise<UserEntity[]> {
@@ -205,4 +205,6 @@ export class UserService {
     };
     await this.transactService.insertTransact(secondReq);
   }
+
+  async clickRatePlanCode(ratePlanCodeId: number): Promise<any> {}
 }

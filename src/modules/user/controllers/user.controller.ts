@@ -47,4 +47,13 @@ export class UserController {
   ) {
     return await this.userService.transactProduct(payload.name, request);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/clickRatePlanCode')
+  async clickRatePlanCode(
+    @UserPayload() payload: Payload,
+    @Body() ratePlanCodeId: number,
+  ): Promise<UserEntity> {
+    return this.userService.clickRatePlanCode(ratePlanCodeId);
+  }
 }

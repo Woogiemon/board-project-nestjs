@@ -7,6 +7,7 @@ import { EmployeeService } from '../employee/services/employee.service';
 import { ProductBoardEntity } from '../productBoard/entities/productBoard.entity';
 import { ProductBoardService } from '../productBoard/services/productBoard.service';
 import { PurchaseHistoryEntity } from '../purchaseHistory/entities/purchaseHistory.entity';
+import { RatePlanCodeEntity } from '../ratePlanCode/entities/ratePlanCode.entity';
 import { TransactEntity } from '../transact/entities/transact.entity';
 import { TransactService } from '../transact/services/transact.service';
 import { UserEntity } from '../user/entities/user.entity';
@@ -26,6 +27,7 @@ import { FreeBoardService } from './services/freeBoard.service';
       TransactEntity,
       ProductBoardEntity,
       PurchaseHistoryEntity,
+      RatePlanCodeEntity,
     ]),
   ],
   controllers: [FreeBoardController],
