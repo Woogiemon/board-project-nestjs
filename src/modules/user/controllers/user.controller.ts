@@ -10,6 +10,8 @@ import {
 import { UserPayload } from 'src/decorators/userPayload.decorator';
 import { JwtAuthGuard } from 'src/modules/auth/auth.guard';
 import { Payload } from 'src/modules/auth/dto/payload.dto';
+import { ClickRatePlanCodeRequest } from '../dto/clickRatePlanCodeRequest.dto';
+import { ClickRatePlanCodeResponse } from '../dto/clickRatePlanCodeResponse.dto';
 import { SellProductRequest } from '../dto/sellProductRequest.dto';
 import { UserEntity } from '../entities/user.entity';
 import { UserService } from '../services/user.service';
@@ -52,8 +54,8 @@ export class UserController {
   @Post('/clickRatePlanCode')
   async clickRatePlanCode(
     @UserPayload() payload: Payload,
-    @Body() ratePlanCodeId: number,
-  ): Promise<UserEntity> {
-    return this.userService.clickRatePlanCode(ratePlanCodeId);
+    @Body() request: ClickRatePlanCodeRequest,
+  ): Promise<ClickRatePlanCodeResponse> {
+    return this.userService.clickRatePlanCode(payload.id, request);
   }
 }

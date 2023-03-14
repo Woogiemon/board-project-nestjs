@@ -15,6 +15,8 @@ import { InsertTransactRequest } from 'src/modules/transact/dto/insertTransactRe
 import { TransactService } from 'src/modules/transact/services/transact.service';
 import { Repository } from 'typeorm';
 import { AddUserRequest } from '../dto/addUserRequest.dto';
+import { ClickRatePlanCodeRequest } from '../dto/clickRatePlanCodeRequest.dto';
+import { ClickRatePlanCodeResponse } from '../dto/clickRatePlanCodeResponse.dto';
 import { SellProductRequest } from '../dto/sellProductRequest.dto';
 import { UserEntity } from '../entities/user.entity';
 
@@ -206,5 +208,31 @@ export class UserService {
     await this.transactService.insertTransact(secondReq);
   }
 
-  async clickRatePlanCode(ratePlanCodeId: number): Promise<any> {}
+  async clickRatePlanCode(
+    userId: number,
+    request: ClickRatePlanCodeRequest,
+  ): Promise<ClickRatePlanCodeResponse> {
+    const ratePlanCode = await this.ratePlanCodeRepository.findOne({
+      where: { id: request.ratePlanCodeId },
+    });
+
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['ratePlanCode'],
+    });
+
+    await this.userRepository.update(user.id, {
+      point: user.point + ratePlanCode.point,
+      ratePlanCode: ratePlanCode,
+    });
+
+    return {
+      id: user.id,
+      email: user.email,
+      password: user.password,
+      name: user.name,
+      point: user.point + ratePlanCode.point,
+      ratePlanCode: ratePlanCode.groupCode,
+    };
+  }
 }
