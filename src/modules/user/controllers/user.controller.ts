@@ -10,7 +10,7 @@ import {
 import { UserPayload } from 'src/decorators/userPayload.decorator';
 import { JwtAuthGuard } from 'src/modules/auth/auth.guard';
 import { Payload } from 'src/modules/auth/dto/payload.dto';
-import { transactProductRequest } from '../dto/transactProductRequest.dto';
+import { SellProductRequest } from '../dto/sellProductRequest.dto';
 import { UserEntity } from '../entities/user.entity';
 import { UserService } from '../services/user.service';
 
@@ -33,14 +33,18 @@ export class UserController {
   @Post('/sellProduct')
   async sellProduct(
     @UserPayload() payload: Payload,
-    @Body() request: transactProductRequest,
+    @Body() request: SellProductRequest,
   ) {
     this.logger.debug('구매자 이름' + payload.name);
     return await this.userService.sellProduct(payload.name, request);
   }
 
-  // @Post('/transactProduct')
-  // async transactProduct(@Body() request: transactProductRequest) {
-  //   return await this.userService.transactProduct(request);
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Post('/transactProduct')
+  async transactProduct(
+    @UserPayload() payload: Payload,
+    @Body() request: SellProductRequest,
+  ) {
+    return await this.userService.transactProduct(payload.name, request);
+  }
 }

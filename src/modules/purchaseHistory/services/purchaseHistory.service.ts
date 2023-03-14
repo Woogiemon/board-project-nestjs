@@ -40,7 +40,7 @@ export class PurchaseHistoryService {
     // 3-1. 유저 정보 업데이트
     // 차감한 포인트 양
     const Price = product.price;
-    if (UserPoint - Price <= 0) {
+    if (UserPoint - Price < 0) {
       throw new BadRequestException('돈이 부족합니다.');
     }
     await this.userService.updateUser(user.id, UserPoint - Price);
@@ -57,9 +57,9 @@ export class PurchaseHistoryService {
     const purchaseHistory = this.purchaseHistoryRepository.create({
       productName: product.productName,
       user: user,
-      beforPurhcasePoint: UserPoint,
-      PurhcasePoint: Price,
-      AfterPurhcasePoint: AfterUserPoint,
+      beforePurchasePoint: UserPoint,
+      purchasePoint: Price,
+      afterPurchasePoint: AfterUserPoint,
       brand: user.brand,
     });
 
@@ -72,9 +72,9 @@ export class PurchaseHistoryService {
       productName: savedHistory.productName,
       brandId: savedHistory.brand.id,
       userId: user.id,
-      beforPurhcasePoint: savedHistory.beforPurhcasePoint,
-      PurhcasePoint: savedHistory.PurhcasePoint,
-      AfterPurhcasePoint: savedHistory.AfterPurhcasePoint,
+      beforPurchasePoint: savedHistory.beforePurchasePoint,
+      purchasePoint: savedHistory.purchasePoint,
+      afterPurchasePoint: savedHistory.afterPurchasePoint,
       created_at: savedHistory.created_at,
     };
   }

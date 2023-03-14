@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { JwtAuthGuard } from '../auth/auth.guard';
 import { BrandEntity } from '../brand/entities/brand.entity';
 import { BrandService } from '../brand/services/brand.service';
 import { EmployeeEntity } from '../employee/entities/employee.entity';
@@ -23,18 +21,17 @@ import { FreeBoardService } from './services/freeBoard.service';
       FreeBoardEntity,
       UserEntity,
       EmployeeEntity,
+      FreeBoardEntity,
       BrandEntity,
-      PurchaseHistoryEntity,
       TransactEntity,
       ProductBoardEntity,
+      PurchaseHistoryEntity,
     ]),
   ],
   controllers: [FreeBoardController],
   providers: [
     FreeBoardService,
-    JwtAuthGuard,
     UserService,
-    JwtService,
     EmployeeService,
     BrandService,
     TransactService,

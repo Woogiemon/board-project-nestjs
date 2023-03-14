@@ -5,6 +5,8 @@ import { BrandService } from '../brand/services/brand.service';
 import { EmployeeEntity } from '../employee/entities/employee.entity';
 import { ProductBoardEntity } from '../productBoard/entities/productBoard.entity';
 import { ProductBoardService } from '../productBoard/services/productBoard.service';
+import { TransactEntity } from '../transact/entities/transact.entity';
+import { TransactService } from '../transact/services/transact.service';
 import { UserEntity } from '../user/entities/user.entity';
 import { UserService } from '../user/services/user.service';
 import { PurchaseHistoryController } from './controllers/purchaseHistory.controller';
@@ -16,9 +18,10 @@ import { PurchaseHistoryService } from './services/purchaseHistory.service';
     TypeOrmModule.forFeature([
       PurchaseHistoryEntity,
       UserEntity,
-      BrandEntity,
       ProductBoardEntity,
       EmployeeEntity,
+      BrandEntity,
+      TransactEntity,
     ]),
   ],
   controllers: [PurchaseHistoryController],
@@ -27,6 +30,7 @@ import { PurchaseHistoryService } from './services/purchaseHistory.service';
     ProductBoardService,
     UserService,
     BrandService,
+    TransactService,
   ],
   exports: [PurchaseHistoryService],
 })

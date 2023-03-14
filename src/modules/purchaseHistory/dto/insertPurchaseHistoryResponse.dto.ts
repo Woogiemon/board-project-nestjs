@@ -20,15 +20,15 @@ export class InsertPurchaseHistoryResponse {
 
   @ApiProperty()
   @IsNumber()
-  beforPurhcasePoint: number;
+  beforPurchasePoint: number;
 
   @ApiProperty()
   @IsNumber()
-  PurhcasePoint: number;
+  purchasePoint: number;
 
   @ApiProperty()
   @IsNumber()
-  AfterPurhcasePoint: number;
+  afterPurchasePoint: number;
 
   @ApiProperty()
   @IsDate()

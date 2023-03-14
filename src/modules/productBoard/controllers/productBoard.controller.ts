@@ -30,6 +30,7 @@ import { ProductBoardService } from '../services/productBoard.service';
  * Read (일반 유저 : 가능, 직원 유저 : 가능)
  * Delete (일반 유저 : 불가능, 직원 유저 : 가능)
  */
+
 @Controller('productBoard')
 export class ProductBoardController {
   constructor(

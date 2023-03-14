@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { JwtAuthGuard } from '../auth/auth.guard';
 import { BrandEntity } from '../brand/entities/brand.entity';
 import { BrandService } from '../brand/services/brand.service';
 import { EmployeeEntity } from '../employee/entities/employee.entity';
@@ -15,11 +14,11 @@ import { ProductBoardService } from './services/productBoard.service';
     TypeOrmModule.forFeature([
       ProductBoardEntity,
       EmployeeEntity,
-      BrandEntity,
       UserEntity,
+      BrandEntity,
     ]),
   ],
   controllers: [ProductBoardController],
-  providers: [ProductBoardService, EmployeeService, JwtAuthGuard, BrandService],
+  providers: [ProductBoardService, EmployeeService, BrandService],
 })
 export class ProductBoardModule {}

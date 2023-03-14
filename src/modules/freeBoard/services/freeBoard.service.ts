@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BrandEntity } from 'src/modules/brand/entities/brand.entity';
 import { EmployeeEntity } from 'src/modules/employee/entities/employee.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -18,8 +17,6 @@ export class FreeBoardService {
   constructor(
     @InjectRepository(FreeBoardEntity)
     private freeBoardRepository: Repository<FreeBoardEntity>,
-    @InjectRepository(BrandEntity)
-    private brandRepository: Repository<BrandEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     @InjectRepository(EmployeeEntity)

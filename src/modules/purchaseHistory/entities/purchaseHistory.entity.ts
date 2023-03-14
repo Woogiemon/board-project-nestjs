@@ -32,13 +32,13 @@ export class PurchaseHistoryEntity {
    * 차감 후 해당 사용자가 가진 포인트 양
    */
   @Column({ name: 'BEFOR_PURCHASE_POINT' })
-  beforPurhcasePoint: number;
+  beforePurchasePoint: number;
 
   @Column({ name: 'PURCHASE_POINT' })
-  PurhcasePoint: number;
+  purchasePoint: number;
 
   @Column({ name: 'AFTER_PURCHASE_POINT' })
-  AfterPurhcasePoint: number;
+  afterPurchasePoint: number;
 
   @CreateDateColumn({ name: 'CREATE_AT' })
   created_at: Date;
