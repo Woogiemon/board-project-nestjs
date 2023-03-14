@@ -1,6 +1,7 @@
 import { BrandEntity } from 'src/modules/brand/entities/brand.entity';
 import { FreeBoardEntity } from 'src/modules/freeBoard/entities/freeBoard.entity';
 import { ProductBoardEntity } from 'src/modules/productBoard/entities/productBoard.entity';
+import { ProductReqListEntity } from 'src/modules/productReqList/entities/productReqList.entity';
 import {
   Column,
   Entity,
@@ -30,4 +31,10 @@ export class EmployeeEntity {
 
   @OneToMany(() => ProductBoardEntity, (productBoard) => productBoard.employee)
   productBoards: ProductBoardEntity[];
+
+  @OneToMany(
+    () => ProductReqListEntity,
+    (productReqList) => productReqList.employee,
+  )
+  productReqList: ProductReqListEntity[];
 }

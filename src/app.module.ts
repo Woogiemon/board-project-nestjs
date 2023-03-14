@@ -8,6 +8,7 @@ import { BrandModule } from './modules/brand/brand.module';
 import { EmployeeModule } from './modules/employee/employee.module';
 import { FreeBoardModule } from './modules/freeBoard/freeBoard.module';
 import { ProductBoardModule } from './modules/productBoard/productBoard.module';
+import { ProductReqListModule } from './modules/productReqList/productReqList.module';
 import { PurchaseHistoryModule } from './modules/purchaseHistory/purchaseHistory.module';
 import { RatePlanCodeModule } from './modules/ratePlanCode/ratePlanCode.module';
 import { TransactModule } from './modules/transact/transact.module';
@@ -50,6 +51,7 @@ import { UserModule } from './modules/user/user.module';
     PurchaseHistoryModule,
     AuthModule,
     RatePlanCodeModule,
+    ProductReqListModule,
   ],
   controllers: [],
   providers: [],

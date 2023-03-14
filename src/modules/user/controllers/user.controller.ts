@@ -12,6 +12,7 @@ import { JwtAuthGuard } from 'src/modules/auth/auth.guard';
 import { Payload } from 'src/modules/auth/dto/payload.dto';
 import { ClickRatePlanCodeRequest } from '../dto/clickRatePlanCodeRequest.dto';
 import { ClickRatePlanCodeResponse } from '../dto/clickRatePlanCodeResponse.dto';
+import { RequestProductRequest } from '../dto/requestProductRequest.dto';
 import { SellProductRequest } from '../dto/sellProductRequest.dto';
 import { UserEntity } from '../entities/user.entity';
 import { UserService } from '../services/user.service';
@@ -57,5 +58,14 @@ export class UserController {
     @Body() request: ClickRatePlanCodeRequest,
   ): Promise<ClickRatePlanCodeResponse> {
     return this.userService.clickRatePlanCode(payload.id, request);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/requestProduct')
+  async requestProduct(
+    @UserPayload() payload: Payload,
+    @Body() request: RequestProductRequest,
+  ) {
+    return this.userService.requestProduct(payload.id, request);
   }
 }

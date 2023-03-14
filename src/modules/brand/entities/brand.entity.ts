@@ -1,6 +1,7 @@
 import { EmployeeEntity } from 'src/modules/employee/entities/employee.entity';
 import { FreeBoardEntity } from 'src/modules/freeBoard/entities/freeBoard.entity';
 import { ProductBoardEntity } from 'src/modules/productBoard/entities/productBoard.entity';
+import { ProductReqListEntity } from 'src/modules/productReqList/entities/productReqList.entity';
 import { PurchaseHistoryEntity } from 'src/modules/purchaseHistory/entities/purchaseHistory.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
 import {
@@ -39,6 +40,12 @@ export class BrandEntity {
     (purchaseHistory) => purchaseHistory.brand,
   )
   purchaseHistories: PurchaseHistoryEntity[];
+
+  @OneToMany(
+    () => ProductReqListEntity,
+    (productReqList) => productReqList.brand,
+  )
+  productReqList: ProductReqListEntity[];
 
   @CreateDateColumn({ name: 'CREATE_AT' })
   created_at: Date;

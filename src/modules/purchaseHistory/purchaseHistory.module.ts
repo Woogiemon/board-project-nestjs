@@ -5,6 +5,8 @@ import { BrandService } from '../brand/services/brand.service';
 import { EmployeeEntity } from '../employee/entities/employee.entity';
 import { ProductBoardEntity } from '../productBoard/entities/productBoard.entity';
 import { ProductBoardService } from '../productBoard/services/productBoard.service';
+import { ProductReqListEntity } from '../productReqList/entities/productReqList.entity';
+import { ProductReqListService } from '../productReqList/services/productReqList.service';
 import { RatePlanCodeEntity } from '../ratePlanCode/entities/ratePlanCode.entity';
 import { TransactEntity } from '../transact/entities/transact.entity';
 import { TransactService } from '../transact/services/transact.service';
@@ -24,6 +26,7 @@ import { PurchaseHistoryService } from './services/purchaseHistory.service';
       BrandEntity,
       TransactEntity,
       RatePlanCodeEntity,
+      ProductReqListEntity,
     ]),
   ],
   controllers: [PurchaseHistoryController],
@@ -33,6 +36,7 @@ import { PurchaseHistoryService } from './services/purchaseHistory.service';
     UserService,
     BrandService,
     TransactService,
+    ProductReqListService,
   ],
   exports: [PurchaseHistoryService],
 })

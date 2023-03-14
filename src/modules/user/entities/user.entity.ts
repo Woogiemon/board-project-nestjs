@@ -1,6 +1,7 @@
 import { BrandEntity } from 'src/modules/brand/entities/brand.entity';
 import { FreeBoardEntity } from 'src/modules/freeBoard/entities/freeBoard.entity';
-import { ProductRequestListEntity } from 'src/modules/productRequestList/entities/productRequestList.entity';
+import { ProductBoardEntity } from 'src/modules/productBoard/entities/productBoard.entity';
+import { ProductReqListEntity } from 'src/modules/productReqList/entities/productReqList.entity';
 import { PurchaseHistoryEntity } from 'src/modules/purchaseHistory/entities/purchaseHistory.entity';
 import { RatePlanCodeEntity } from 'src/modules/ratePlanCode/entities/ratePlanCode.entity';
 import { TransactEntity } from 'src/modules/transact/entities/transact.entity';
@@ -57,10 +58,14 @@ export class UserEntity {
   ratePlanCode: RatePlanCodeEntity;
 
   @OneToMany(
-    () => ProductRequestListEntity,
-    (productRequestList) => productRequestList.user,
+    () => ProductReqListEntity,
+    (productReqList) => productReqList.user,
   )
-  productRequestList: UserEntity[];
+  productReqList: UserEntity[];
+
+  @OneToMany(() => ProductBoardEntity, (productBoard) => productBoard.user)
+  productBoard: ProductBoardEntity[];
+
   @CreateDateColumn({ name: 'CREATE_AT' })
   created_at: Date;
 

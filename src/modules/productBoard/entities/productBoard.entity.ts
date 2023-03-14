@@ -1,6 +1,7 @@
 import { BrandEntity } from 'src/modules/brand/entities/brand.entity';
 import { EmployeeEntity } from 'src/modules/employee/entities/employee.entity';
 import { TransactEntity } from 'src/modules/transact/entities/transact.entity';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -27,6 +28,9 @@ export class ProductBoardEntity {
 
   @ManyToOne(() => EmployeeEntity, (employee) => employee.productBoards)
   employee: EmployeeEntity;
+
+  @ManyToOne(() => UserEntity, (user) => user.productBoard)
+  user: UserEntity;
 
   @OneToMany(() => TransactEntity, (transact) => transact.product)
   transacts: TransactEntity[];

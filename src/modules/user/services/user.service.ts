@@ -9,6 +9,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { BrandService } from 'src/modules/brand/services/brand.service';
 import { ProductBoardEntity } from 'src/modules/productBoard/entities/productBoard.entity';
+import { InsertProductReqListRequest } from 'src/modules/productReqList/dto/InsertProductReqListRequest.dto';
+import { ProductReqListService } from 'src/modules/productReqList/services/productReqList.service';
 import { PurchaseHistoryEntity } from 'src/modules/purchaseHistory/entities/purchaseHistory.entity';
 import { RatePlanCodeEntity } from 'src/modules/ratePlanCode/entities/ratePlanCode.entity';
 import { InsertTransactRequest } from 'src/modules/transact/dto/insertTransactRequest.dto';
@@ -17,6 +19,7 @@ import { Repository } from 'typeorm';
 import { AddUserRequest } from '../dto/addUserRequest.dto';
 import { ClickRatePlanCodeRequest } from '../dto/clickRatePlanCodeRequest.dto';
 import { ClickRatePlanCodeResponse } from '../dto/clickRatePlanCodeResponse.dto';
+import { RequestProductRequest } from '../dto/requestProductRequest.dto';
 import { SellProductRequest } from '../dto/sellProductRequest.dto';
 import { UserEntity } from '../entities/user.entity';
 
@@ -34,6 +37,7 @@ export class UserService {
     private readonly ratePlanCodeRepository: Repository<RatePlanCodeEntity>,
     private readonly brandService: BrandService,
     private readonly transactService: TransactService,
+    private readonly productReqListService: ProductReqListService,
   ) {}
 
   async fetchAllUser(): Promise<UserEntity[]> {
@@ -43,7 +47,7 @@ export class UserService {
   async fetchOneUser(id: number): Promise<UserEntity> {
     return await this.userRepository.findOne({
       where: { id },
-      relations: ['purchaseHistories', 'brand'],
+      relations: ['purchaseHistories', 'brand', 'productReqList'],
     });
   }
 
@@ -234,5 +238,15 @@ export class UserService {
       point: user.point + ratePlanCode.point,
       ratePlanCode: ratePlanCode.groupCode,
     };
+  }
+
+  async requestProduct(userId: number, request: RequestProductRequest) {
+    const Req: InsertProductReqListRequest = {
+      productName: request.productName,
+      price: request.price,
+      userId: userId,
+    };
+
+    return await this.productReqListService.insertProductReqList(Req);
   }
 }
