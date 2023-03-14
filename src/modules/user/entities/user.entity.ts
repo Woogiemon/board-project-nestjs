@@ -1,12 +1,14 @@
 import { BrandEntity } from 'src/modules/brand/entities/brand.entity';
 import { FreeBoardEntity } from 'src/modules/freeBoard/entities/freeBoard.entity';
 import { PurchaseHistoryEntity } from 'src/modules/purchaseHistory/entities/purchaseHistory.entity';
+import { RatePlanCodeEntity } from 'src/modules/ratePlanCode/entities/ratePlanCode.entity';
 import { TransactEntity } from 'src/modules/transact/entities/transact.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   Generated,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -48,6 +50,10 @@ export class UserEntity {
 
   @ManyToOne(() => BrandEntity, (company) => company.users)
   brand: BrandEntity;
+
+  @ManyToOne(() => RatePlanCodeEntity, (ratePlanCode) => ratePlanCode.users)
+  @JoinColumn({ name: 'RATE_PLAN_CODE_ID' })
+  ratePlanCode: RatePlanCodeEntity;
 
   @CreateDateColumn({ name: 'CREATE_AT' })
   created_at: Date;

@@ -16,11 +16,11 @@ export class TransactEntity {
   id: number;
 
   @ManyToOne(() => UserEntity, (user) => user.purchaseTransacts)
-  @JoinColumn({ name: 'PURCHASE_USER_NAME' })
+  @JoinColumn({ name: 'PURCHASE_USER_ID' })
   purchaseUserName: UserEntity;
 
   @ManyToOne(() => UserEntity, (user) => user.sellTransacts)
-  @JoinColumn({ name: 'SELL_USER_NAME' })
+  @JoinColumn({ name: 'SELL_USER_ID' })
   sellUserName: UserEntity;
 
   @ManyToOne(() => ProductBoardEntity, (product) => product.transacts)
