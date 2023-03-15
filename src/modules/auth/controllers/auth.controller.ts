@@ -8,10 +8,8 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { UserPayload } from 'src/decorators/userPayload.decorator';
-import { BrandService } from 'src/modules/brand/services/brand.service';
 import { EmployeeService } from 'src/modules/employee/services/employee.service';
 import { UserService } from '../../user/services/user.service';
 import { JwtAuthGuard } from '../auth.guard';
@@ -27,8 +25,6 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly userService: UserService,
     private readonly employeeService: EmployeeService,
-    private readonly brandService: BrandService,
-    private readonly jwtService: JwtService,
   ) {}
 
   @Post('/register')
@@ -45,7 +41,10 @@ export class AuthController {
   async login(@Body() request: LoginRequest, @Res() res: Response) {
     if (request.email != 'string') {
       const user = await this.userService.getByEmail(request.email);
-      this.authService.getAuthenticatedUser(request.email, request.password);
+      await this.authService.getAuthenticatedUser(
+        request.email,
+        request.password,
+      );
       const accessToken = await this.authService.getAccessToken(user.email);
       res.setHeader('Authorization', 'Bearer ' + accessToken);
       res.cookie('jwt', accessToken, {

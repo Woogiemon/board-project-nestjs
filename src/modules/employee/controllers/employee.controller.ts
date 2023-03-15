@@ -33,7 +33,7 @@ export class EmployeeController {
   ) {
     if (payload.email) {
       throw new UnauthorizedException(
-        '상품 등록의 승인은 직원만 등록할 수 있습니다.',
+        '상품 등록의 승인은 직원만 할 수 있습니다.',
       );
     }
     return await this.employeeService.decideProductReqList(payload.id, request);

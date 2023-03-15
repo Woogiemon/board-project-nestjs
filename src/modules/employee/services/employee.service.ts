@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RegisterRequest } from 'src/modules/auth/dto/registerRequest.dto';
 import { BrandService } from 'src/modules/brand/services/brand.service';
@@ -56,7 +50,7 @@ export class EmployeeService {
   async decideProductReqList(
     employeeId: number,
     request: DecideProductReqListRequest,
-  ) {
+  ): Promise<ProductReqListEntity> {
     const productReqInfo = await this.productReqListRepository.findOne({
       where: { id: request.productReqListId },
       relations: ['user', 'employee'],
@@ -90,6 +84,11 @@ export class EmployeeService {
         brand: userInfo.brand,
       });
       await this.productBoardRepository.save(newProductBoard);
+
+      return await this.productReqListRepository.findOne({
+        where: { id: request.productReqListId },
+        relations: ['user', 'employee', 'brand'],
+      });
     }
 
     // 2. 거절
@@ -101,12 +100,10 @@ export class EmployeeService {
         employee: employeeInfo,
       });
 
-      const result = await this.productReqListRepository.findOne({
+      return await this.productReqListRepository.findOne({
         where: { id: request.productReqListId },
         relations: ['user', 'employee', 'brand'],
       });
-
-      return result;
     }
 
     // 3. 연기
@@ -117,14 +114,11 @@ export class EmployeeService {
         reason: request.reason,
         employee: employeeInfo,
       });
-    }
 
-    if (
-      request.status != 'Approved' &&
-      request.status != 'Rejected' &&
-      request.status != 'Delayed'
-    ) {
-      throw new BadRequestException('status 값이 올바르지 않습니다.');
+      return await this.productReqListRepository.findOne({
+        where: { id: request.productReqListId },
+        relations: ['user', 'employee', 'brand'],
+      });
     }
   }
 }

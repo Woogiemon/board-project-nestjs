@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsIn, IsNumber, IsString } from 'class-validator';
 
 export class DecideProductReqListRequest {
   @ApiProperty()
@@ -7,7 +7,7 @@ export class DecideProductReqListRequest {
   productReqListId: number;
 
   @ApiProperty()
-  @IsString()
+  @IsIn(['Approved', 'Rejected', 'Delayed'])
   status: string;
 
   @ApiProperty()
