@@ -15,6 +15,13 @@ export class ProductReqListService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
+  async fetchOneProductReqList(id: number) {
+    return await this.productReqListRepository.findOne({
+      where: { id },
+      relations: ['user', 'employee', 'brand'],
+    });
+  }
+
   async insertProductReqList(
     request: InsertProductReqListRequest,
   ): Promise<InsertProductReqListResponse> {

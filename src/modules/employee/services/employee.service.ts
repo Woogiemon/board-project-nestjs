@@ -4,6 +4,7 @@ import { RegisterRequest } from 'src/modules/auth/dto/registerRequest.dto';
 import { BrandService } from 'src/modules/brand/services/brand.service';
 import { ProductBoardEntity } from 'src/modules/productBoard/entities/productBoard.entity';
 import { ProductReqListEntity } from 'src/modules/productReqList/entities/productReqList.entity';
+import { ProductReqListService } from 'src/modules/productReqList/services/productReqList.service';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { DecideProductReqListRequest } from '../dto/decideProductReqListRequest.dto';
@@ -22,6 +23,7 @@ export class EmployeeService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly brandService: BrandService,
+    private readonly productReqListService: ProductReqListService,
   ) {}
 
   async addEmployee(request: RegisterRequest): Promise<EmployeeEntity> {
@@ -85,10 +87,9 @@ export class EmployeeService {
       });
       await this.productBoardRepository.save(newProductBoard);
 
-      return await this.productReqListRepository.findOne({
-        where: { id: request.productReqListId },
-        relations: ['user', 'employee', 'brand'],
-      });
+      return await this.productReqListService.fetchOneProductReqList(
+        request.productReqListId,
+      );
     }
 
     // 2. 거절
@@ -100,10 +101,9 @@ export class EmployeeService {
         employee: employeeInfo,
       });
 
-      return await this.productReqListRepository.findOne({
-        where: { id: request.productReqListId },
-        relations: ['user', 'employee', 'brand'],
-      });
+      return await this.productReqListService.fetchOneProductReqList(
+        request.productReqListId,
+      );
     }
 
     // 3. 연기
@@ -115,10 +115,9 @@ export class EmployeeService {
         employee: employeeInfo,
       });
 
-      return await this.productReqListRepository.findOne({
-        where: { id: request.productReqListId },
-        relations: ['user', 'employee', 'brand'],
-      });
+      return await this.productReqListService.fetchOneProductReqList(
+        request.productReqListId,
+      );
     }
   }
 }
