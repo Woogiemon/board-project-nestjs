@@ -36,7 +36,6 @@ export class AuthController {
     }
   }
 
-  // TODO : 로그인된 유저의 정보 Response
   @Post('/login')
   async login(@Body() request: LoginRequest, @Res() res: Response) {
     if (request.email != 'string') {
@@ -50,6 +49,10 @@ export class AuthController {
       res.cookie('jwt', accessToken, {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
+      });
+      return res.send({
+        user: user,
+        message: '로그인 성공',
       });
     } else {
       const employee = await this.employeeService.fetchOneEmployee(
@@ -68,10 +71,11 @@ export class AuthController {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
       });
+      return res.send({
+        employee: employee,
+        message: '로그인 성공',
+      });
     }
-    return res.send({
-      message: '로그인 성공',
-    });
   }
 
   @Post('/logout')

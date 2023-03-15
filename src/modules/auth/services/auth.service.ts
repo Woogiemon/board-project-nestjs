@@ -41,13 +41,11 @@ export class AuthService {
       brandId: brand.id,
     });
 
-    const accessToken = await this.jwtService.signAsync(
-      instanceToPlain(createdUser),
-      {
-        secret: this.config.get<string>('JWT_SECRET'),
-      },
-    );
-    return accessToken;
+    //accessToken 생성
+    await this.jwtService.signAsync(instanceToPlain(createdUser), {
+      secret: this.config.get<string>('JWT_SECRET'),
+    });
+    return createdUser;
   }
 
   public async registerEmployee(request: RegisterRequest) {
@@ -62,13 +60,11 @@ export class AuthService {
       brandId: brand.id,
     });
 
-    const accessToken = await this.jwtService.signAsync(
-      instanceToPlain(createdEmployee),
-      {
-        secret: this.config.get<string>('JWT_SECRET'),
-      },
-    );
-    return accessToken;
+    //accessToken 생성
+    await this.jwtService.signAsync(instanceToPlain(createdEmployee), {
+      secret: this.config.get<string>('JWT_SECRET'),
+    });
+    return createdEmployee;
   }
 
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
